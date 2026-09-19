@@ -1,25 +1,71 @@
-<<<<<<< HEAD
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# LabTwin — Laboratory Monitoring System
 
-# Run and deploy your AI Studio app
+Centralized Academic Block & Floor-wise Laboratory Monitoring System for college computer laboratories. Features real-time Digital Twin telemetry for workstation connectivity and electrical power relays, floor navigation, occupancy tracking, and Google Calendar lab booking integration.
 
-This contains everything you need to run your app locally.
+## Features
+- **Floor Navigation & Elevation View**: Interactive elevation explorer for campus academic blocks with individual lab tracking across all floors.
+- **Digital Twin Telemetry**: Live telemetry view monitoring PC power, CPU/RAM/Disk utilization, operating status, and network connectivity.
+- **REST Telemetry Ingestion**: Integrated Node.js/Express API (`POST /api/metrics`) for ingesting hardware metrics from workstation background agents.
+- **Lab Booking & Calendar**: Integrated schedule booking with optional Google Calendar synchronization via Firebase Authentication.
 
-View your app in AI Studio: https://ai.studio/apps/0ee9f70c-370e-4432-90c7-ad9b5105cf7e
+## Deploy to Vercel
 
-## Run Locally
+The application is pre-configured for one-click deployment to [Vercel](https://vercel.com):
 
-**Prerequisites:**  Node.js
+1. **Push your repository** to GitHub or GitLab.
+2. **Import into Vercel**:
+   - Framework Preset: **Vite**
+   - Root Directory: `./`
+   - Build Command: `vite build` (or leave default `npm run build`)
+   - Output Directory: `dist`
+3. **Environment Variables (Optional)**:
+   - `GEMINI_API_KEY`: (Optional) Server-side Gemini API key if using AI telemetry analysis.
+4. **Deploy**:
+   - Vercel automatically detects `vercel.json` and routes `/api/*` to the serverless function (`/api/index.ts`) and all client routes to the Vite single-page application (`dist/index.html`).
 
+### Deploy via Vercel CLI
+
+```bash
+# Install Vercel CLI globally
+npm i -g vercel
+
+# Deploy preview
+vercel
+
+# Deploy to production
+vercel --prod
+```
+
+**Prerequisites:** Node.js 22+
 
 1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
-=======
-# LabTwin
-Laboartory Monitoring System
->>>>>>> 8d973e18352bc9997070aa65d8548c945c17eb5a
+   ```bash
+   npm install
+   ```
+2. Start the unified application on port 3000:
+   ```bash
+   npm run dev
+   ```
+3. Build for production:
+   ```bash
+   npm run build
+   npm start
+   ```
+
+## Telemetry Ingestion API
+
+Laboratory workstations can send telemetry heartbeats to:
+- **Endpoint**: `POST /api/metrics`
+- **Sample Payload**:
+  ```json
+  {
+    "device_id": "LAB-A-PC01",
+    "hostname": "CIT-CSE-LAB01",
+    "ip_address": "192.168.10.101",
+    "cpu_usage": 34.5,
+    "ram_usage": 58.2,
+    "disk_usage": 42.8,
+    "timestamp": "2026-09-19T16:45:00Z"
+  }
+  ```
+
