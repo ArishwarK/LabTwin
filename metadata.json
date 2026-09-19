@@ -1,0 +1,6 @@
+{
+  "name": "Laboratory Monitoring System",
+  "description": "Centralized College Academic Block & Floor-wise Laboratory Monitoring System. Features real-time Digital Twin telemetry for connectivity (Online/Offline) and electrical power relays (ON/OFF), floor navigation, occupancy tracking, and dark/light themes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
