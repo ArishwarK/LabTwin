@@ -140,7 +140,7 @@ export default function LabFloorPlan({
       }`}>
         <div>
           <div className="flex items-center gap-2">
-            <h3 className={`text-xs font-black uppercase tracking-wider ${isDark ? 'text-white' : 'text-blue-950'}`}>
+            <h3 className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-white' : 'text-blue-950'}`}>
               Floor Digital Twin Architecture • {floor.roomNumber}
             </h3>
             <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${
@@ -189,12 +189,12 @@ export default function LabFloorPlan({
           {/* Room Badge in corner */}
           <div className="flex flex-wrap items-center justify-between gap-2 mb-4 border-b pb-2 border-slate-200 dark:border-slate-700">
             <div className="flex items-center gap-2">
-              <span className={`text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded ${
+              <span className={`text-[10px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded ${
                 isDark ? 'bg-blue-600 text-white' : 'bg-blue-700 text-white'
               }`}>
                 {floor.floorName.toUpperCase()} ENTRANCE
               </span>
-              <span className={`text-xs font-bold ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
+              <span className={`text-xs font-semibold ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
                 {floor.labName}
               </span>
             </div>
@@ -206,7 +206,7 @@ export default function LabFloorPlan({
           {/* Section 1: Front Demonstration & Teaching Stage (Podium) */}
           <div className="mb-5 w-full min-w-0">
             <div className="flex items-center gap-2 mb-2">
-              <span className={`text-[10px] font-black uppercase tracking-wider font-mono ${
+              <span className={`text-[10px] font-semibold uppercase tracking-wider font-mono ${
                 isDark ? 'text-blue-400' : 'text-blue-700'
               }`}>
                 [Zone 0] Faculty Demonstration Stage & Master Console
@@ -231,7 +231,7 @@ export default function LabFloorPlan({
               isDark ? 'bg-slate-800/80 border-slate-700' : 'bg-slate-50 border-slate-200'
             }`}>
               <div className="flex items-center justify-between mb-2.5 pb-1.5 border-b border-slate-200 dark:border-slate-700">
-                <span className={`text-[10px] font-black uppercase tracking-wider font-mono ${
+                <span className={`text-[10px] font-semibold uppercase tracking-wider font-mono ${
                   isDark ? 'text-blue-400' : 'text-blue-700'
                 }`}>
                   Row 1 • Workstation Bench A
@@ -248,7 +248,7 @@ export default function LabFloorPlan({
               isDark ? 'bg-slate-800/80 border-slate-700' : 'bg-slate-50 border-slate-200'
             }`}>
               <div className="flex items-center justify-between mb-2.5 pb-1.5 border-b border-slate-200 dark:border-slate-700">
-                <span className={`text-[10px] font-black uppercase tracking-wider font-mono ${
+                <span className={`text-[10px] font-semibold uppercase tracking-wider font-mono ${
                   isDark ? 'text-blue-400' : 'text-blue-700'
                 }`}>
                   Row 2 • Workstation Bench B
@@ -265,7 +265,7 @@ export default function LabFloorPlan({
           {/* Guaranteed NO overlap: Each column is strictly bounded with min-w-0 and responsive grid */}
           <div className="w-full min-w-0 pt-2 border-t border-slate-200 dark:border-slate-700">
             <div className="mb-3">
-              <span className={`text-[10px] font-black uppercase tracking-wider font-mono ${
+              <span className={`text-[10px] font-semibold uppercase tracking-wider font-mono ${
                 isDark ? 'text-slate-400' : 'text-slate-600'
               }`}>
                 Facility Infrastructure & Auxiliary Relays
@@ -278,12 +278,12 @@ export default function LabFloorPlan({
                 isDark ? 'bg-slate-800/90 border-slate-700' : 'bg-slate-50 border-slate-200'
               }`}>
                 <div className="flex items-center justify-between mb-2.5 pb-1.5 border-b border-slate-200 dark:border-slate-700 w-full min-w-0">
-                  <span className={`text-[10px] font-black uppercase tracking-wider font-mono truncate ${
+                  <span className={`text-[10px] font-semibold uppercase tracking-wider font-mono truncate ${
                     isDark ? 'text-blue-400' : 'text-blue-700'
                   }`}>
                     Server & Rack Unit
                   </span>
-                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 flex-shrink-0 ml-1">
+                  <span className="text-[9px] font-mono font-semibold px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 flex-shrink-0 ml-1">
                     Rack Bay
                   </span>
                 </div>
@@ -303,12 +303,12 @@ export default function LabFloorPlan({
                 isDark ? 'bg-slate-800/90 border-slate-700' : 'bg-slate-50 border-slate-200'
               }`}>
                 <div className="flex items-center justify-between mb-2.5 pb-1.5 border-b border-slate-200 dark:border-slate-700 w-full min-w-0">
-                  <span className={`text-[10px] font-black uppercase tracking-wider font-mono truncate ${
+                  <span className={`text-[10px] font-semibold uppercase tracking-wider font-mono truncate ${
                     isDark ? 'text-blue-400' : 'text-blue-700'
                   }`}>
                     Peripheral Bay
                   </span>
-                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 flex-shrink-0 ml-1">
+                  <span className="text-[9px] font-mono font-semibold px-1.5 py-0.5 rounded bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 flex-shrink-0 ml-1">
                     Shared Hub
                   </span>
                 </div>
@@ -328,10 +328,10 @@ export default function LabFloorPlan({
                 isDark ? 'bg-slate-800/90 border-slate-700' : 'bg-slate-50 border-slate-200'
               }`}>
                 <div className="flex items-center justify-between mb-2.5 pb-1.5 border-b border-slate-200 dark:border-slate-700 w-full min-w-0">
-                  <span className="text-[10px] font-black uppercase tracking-wider font-mono text-rose-600 dark:text-rose-400 truncate">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider font-mono text-rose-600 dark:text-rose-400 truncate">
                     Safety & Breaker
                   </span>
-                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-300 flex-shrink-0 ml-1">
+                  <span className="text-[9px] font-mono font-semibold px-1.5 py-0.5 rounded bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-300 flex-shrink-0 ml-1">
                     Panel
                   </span>
                 </div>

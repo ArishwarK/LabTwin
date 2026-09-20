@@ -83,7 +83,6 @@ export default function Dashboard({
 
   // Google-style user profile initial and institutional identity
   const userInitial = (currentUser.username || 'User').trim().charAt(0).toUpperCase();
-  const userEmail = currentUser.role === 'admin' ? 'faculty.admin@cit.edu.in' : 'student.scholar@cit.edu.in';
 
   // Bookings state (persisted locally)
   const [bookings, setBookings] = useState<LabBookingSlot[]>(() => {
@@ -306,10 +305,10 @@ export default function Dashboard({
               referrerPolicy="no-referrer"
             />
             <div className="flex items-baseline">
-              <span className={`text-xl font-black tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              <span className={`text-xl font-bold tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
                 Lab
               </span>
-              <span className="text-xl font-black tracking-tight text-blue-600">
+              <span className="text-xl font-bold tracking-tight text-blue-600">
                 Twin
               </span>
             </div>
@@ -415,7 +414,7 @@ export default function Dashboard({
                   <Building2 className="h-4 w-4" />
                 </div>
                 <div>
-                  <h2 className="text-sm font-black tracking-tight leading-none">Smart Lab Portal</h2>
+                  <h2 className="text-sm font-bold tracking-tight leading-none">Smart Lab Portal</h2>
                   <p className={`text-[10px] font-mono mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                     CIT Campus Infrastructure
                   </p>
@@ -441,70 +440,50 @@ export default function Dashboard({
             {/* Scrollable Body */}
             <div className="flex-1 overflow-y-auto px-5 py-5 space-y-6">
               
-              {/* Google-style User Profile Card */}
-              <div className={`p-6 rounded-2xl border text-center flex flex-col items-center relative overflow-hidden ${
+              {/* User Profile Card (Compact) */}
+              <div className={`p-3.5 rounded-xl border flex items-center gap-3 relative overflow-hidden ${
                 isDark 
                   ? 'bg-slate-850/80 border-slate-800 shadow-inner' 
-                  : 'bg-gradient-to-b from-blue-50/50 to-slate-50 border-blue-100/80 shadow-xs'
+                  : 'bg-gradient-to-r from-blue-50/60 to-slate-50 border-blue-100/80 shadow-xs'
               }`}>
                 {/* Background ambient accent */}
-                <div className="absolute -top-10 -right-10 w-28 h-28 bg-blue-500/10 rounded-full blur-2xl pointer-events-none" />
+                <div className="absolute -top-8 -right-8 w-20 h-20 bg-blue-500/10 rounded-full blur-xl pointer-events-none" />
 
-                {/* Google-Style Circular Initial Avatar */}
-                <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-black text-2xl flex items-center justify-center shadow-lg shadow-blue-500/25 ring-4 ring-blue-100 dark:ring-blue-900/50 select-none">
+                {/* Circular Initial Avatar */}
+                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-semibold text-sm flex items-center justify-center shadow-xs ring-2 ring-blue-100 dark:ring-blue-900/50 select-none flex-shrink-0">
                   {userInitial}
                 </div>
 
-                {/* User Name & Email */}
-                <h3 className={`mt-3.5 font-black text-base tracking-tight ${
-                  isDark ? 'text-white' : 'text-slate-900'
-                }`}>
-                  {currentUser.username}
-                </h3>
-
-                <p className={`text-xs font-mono mt-0.5 ${
-                  isDark ? 'text-slate-400' : 'text-slate-500'
-                }`}>
-                  {userEmail}
-                </p>
-
-                {/* Role Pill */}
-                <div className="mt-2.5">
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider font-mono ${
-                    currentUser.role === 'admin'
-                      ? 'bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
-                      : 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
+                {/* User Name & Role Pill */}
+                <div className="min-w-0 flex-1">
+                  <h3 className={`font-semibold text-sm tracking-tight truncate leading-tight ${
+                    isDark ? 'text-white' : 'text-slate-900'
                   }`}>
-                    <ShieldCheck className="h-3.5 w-3.5" />
-                    <span>{currentUser.role === 'admin' ? 'Faculty Admin' : 'Student Scholar'}</span>
-                  </span>
-                </div>
+                    {currentUser.username}
+                  </h3>
 
-                {/* Role Switcher Action */}
-                <button
-                  type="button"
-                  id="btn-sidebar-switch-role"
-                  onClick={() => onSwitchRole(currentUser.role === 'admin' ? 'student' : 'admin')}
-                  className={`mt-4 px-4 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                    isDark 
-                      ? 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-750 hover:text-white' 
-                      : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-100 shadow-2xs'
-                  }`}
-                  title={`Switch to ${currentUser.role === 'admin' ? 'Student' : 'Faculty'} view`}
-                >
-                  <span>Switch to {currentUser.role === 'admin' ? 'Student' : 'Faculty'} role</span>
-                </button>
+                  <div className="mt-1">
+                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-medium uppercase tracking-wider font-mono ${
+                      currentUser.role === 'admin'
+                        ? 'bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
+                        : 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
+                    }`}>
+                      <ShieldCheck className="h-3 w-3" />
+                      <span>{currentUser.role === 'admin' ? 'Faculty Admin' : 'Student Scholar'}</span>
+                    </span>
+                  </div>
+                </div>
               </div>
 
               {/* Navigation Options */}
               <div>
-                <h4 className={`text-[10px] font-black uppercase tracking-widest font-mono mb-2.5 px-1 ${
+                <h4 className={`text-[10px] font-semibold uppercase tracking-wider font-mono mb-2.5 px-1 ${
                   isDark ? 'text-slate-400' : 'text-slate-500'
                 }`}>
                   Menu Navigation
                 </h4>
 
-                <div className="space-y-1.5">
+                <div className="space-y-1">
                   {/* Browse Lab */}
                   <button
                     type="button"
@@ -517,7 +496,7 @@ export default function Dashboard({
                         if (el) el.scrollIntoView({ behavior: 'smooth' });
                       }, 50);
                     }}
-                    className={`w-full flex items-center gap-3.5 p-3 rounded-xl text-left font-bold transition-all cursor-pointer ${
+                    className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left transition-all cursor-pointer ${
                       isDark 
                         ? 'hover:bg-slate-800 text-slate-200 hover:text-white' 
                         : 'hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-transparent hover:border-blue-100'
@@ -526,12 +505,7 @@ export default function Dashboard({
                     <div className={`p-2 rounded-xl flex-shrink-0 ${isDark ? 'bg-blue-950/70 text-blue-400' : 'bg-blue-100 text-blue-600'}`}>
                       <Building2 className="h-4 w-4" />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-bold leading-snug">Browse Lab</p>
-                      <p className={`text-[11px] font-normal truncate ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                        Explore all 5 college laboratories
-                      </p>
-                    </div>
+                    <span className="text-xs font-medium">Browse Lab</span>
                   </button>
 
                   {/* View Twin */}
@@ -542,7 +516,7 @@ export default function Dashboard({
                       setActiveTab('twin');
                       setIsMenuOpen(false);
                     }}
-                    className={`w-full flex items-center gap-3.5 p-3 rounded-xl text-left font-bold transition-all cursor-pointer ${
+                    className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left transition-all cursor-pointer ${
                       isDark 
                         ? 'hover:bg-slate-800 text-slate-200 hover:text-white' 
                         : 'hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-transparent hover:border-blue-100'
@@ -551,12 +525,7 @@ export default function Dashboard({
                     <div className={`p-2 rounded-xl flex-shrink-0 ${isDark ? 'bg-indigo-950/70 text-indigo-400' : 'bg-indigo-100 text-indigo-600'}`}>
                       <Monitor className="h-4 w-4" />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-bold leading-snug">View Twin</p>
-                      <p className={`text-[11px] font-normal truncate ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                        2D interactive floor plan & telemetry
-                      </p>
-                    </div>
+                    <span className="text-xs font-medium">View Twin</span>
                   </button>
 
                   {/* Book Slot */}
@@ -567,7 +536,7 @@ export default function Dashboard({
                       setActiveTab('calendar');
                       setIsMenuOpen(false);
                     }}
-                    className={`w-full flex items-center gap-3.5 p-3 rounded-xl text-left font-bold transition-all cursor-pointer ${
+                    className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left transition-all cursor-pointer ${
                       isDark 
                         ? 'hover:bg-slate-800 text-slate-200 hover:text-white' 
                         : 'hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-transparent hover:border-blue-100'
@@ -576,12 +545,7 @@ export default function Dashboard({
                     <div className={`p-2 rounded-xl flex-shrink-0 ${isDark ? 'bg-emerald-950/70 text-emerald-400' : 'bg-emerald-100 text-emerald-600'}`}>
                       <Calendar className="h-4 w-4" />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-bold leading-snug">Book Slot</p>
-                      <p className={`text-[11px] font-normal truncate ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                        Reserve lab hours & work stations
-                      </p>
-                    </div>
+                    <span className="text-xs font-medium">Book Slot</span>
                   </button>
 
                   {/* Power Relays */}
@@ -593,7 +557,7 @@ export default function Dashboard({
                       setActiveTab('twin');
                       setIsMenuOpen(false);
                     }}
-                    className={`w-full flex items-center gap-3.5 p-3 rounded-xl text-left font-bold transition-all cursor-pointer ${
+                    className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left transition-all cursor-pointer ${
                       isDark 
                         ? 'hover:bg-slate-800 text-slate-200 hover:text-white' 
                         : 'hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-transparent hover:border-blue-100'
@@ -602,12 +566,7 @@ export default function Dashboard({
                     <div className={`p-2 rounded-xl flex-shrink-0 ${isDark ? 'bg-amber-950/70 text-amber-400' : 'bg-amber-100 text-amber-600'}`}>
                       <Zap className="h-4 w-4" />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-bold leading-snug">Power Relays</p>
-                      <p className={`text-[11px] font-normal truncate ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                        Live relay circuit switches & control
-                      </p>
-                    </div>
+                    <span className="text-xs font-medium">Power Relays</span>
                   </button>
                 </div>
               </div>
@@ -656,7 +615,7 @@ export default function Dashboard({
               <div className="max-w-3xl space-y-6">
                 
                 {/* Headline */}
-                <h1 className={`text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.08] ${
+                <h1 className={`text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] ${
                   isDark ? 'text-white' : 'text-slate-900'
                 }`}>
                   Monitor laboratories
@@ -677,7 +636,7 @@ export default function Dashboard({
                       const el = document.getElementById('explore-laboratories-section');
                       if (el) el.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-bold px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl transition-all cursor-pointer shadow-xs flex items-center gap-2"
+                    className="bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl transition-all cursor-pointer shadow-xs flex items-center gap-2"
                   >
                     <span>Explore All 5 Laboratories</span>
                     <ArrowRight className="h-4 w-4" />
@@ -686,7 +645,7 @@ export default function Dashboard({
                   <button
                     type="button"
                     onClick={() => setActiveTab('calendar')}
-                    className={`px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl border text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                    className={`px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl border text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                       isDark 
                         ? 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-750' 
                         : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'
@@ -706,10 +665,10 @@ export default function Dashboard({
               {/* Section Header */}
               <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                 <div>
-                  <span className="text-xs font-black uppercase tracking-widest text-blue-600 dark:text-blue-400 font-mono">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400 font-mono">
                     EXPLORE
                   </span>
-                  <h2 className={`text-2xl sm:text-3xl font-black tracking-tight mt-1 ${
+                  <h2 className={`text-2xl sm:text-3xl font-bold tracking-tight mt-1 ${
                     isDark ? 'text-white' : 'text-slate-900'
                   }`}>
                     Browse by laboratory
@@ -723,7 +682,7 @@ export default function Dashboard({
                     setFloorFilter('all');
                     setNavSearchQuery('');
                   }}
-                  className="text-xs sm:text-sm font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 cursor-pointer self-start sm:self-auto"
+                  className="text-xs sm:text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 cursor-pointer self-start sm:self-auto"
                 >
                   <span>View all</span>
                   <ArrowRight className="h-4 w-4" />
@@ -735,7 +694,7 @@ export default function Dashboard({
                 <button
                   type="button"
                   onClick={() => setFloorFilter('all')}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+                  className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                     floorFilter === 'all'
                       ? 'bg-blue-600 text-white shadow-xs'
                       : isDark
@@ -798,7 +757,7 @@ export default function Dashboard({
                         </div>
 
                         {/* Lab Title */}
-                        <h3 className={`text-lg font-black tracking-tight group-hover:text-blue-600 transition-colors ${
+                        <h3 className={`text-lg font-bold tracking-tight group-hover:text-blue-600 transition-colors ${
                           isDark ? 'text-white' : 'text-slate-900'
                         }`}>
                           {floor.labName}
@@ -822,7 +781,7 @@ export default function Dashboard({
 
                           <div className="flex items-center justify-between">
                             <span>Next Scheduled:</span>
-                            <span className="font-bold text-blue-600 dark:text-blue-400 truncate max-w-[170px]">
+                            <span className="font-semibold text-blue-600 dark:text-blue-400 truncate max-w-[170px]">
                               {nextBooking ? `${nextBooking.courseCode} (${nextBooking.startTime})` : 'Available to book'}
                             </span>
                           </div>
@@ -837,7 +796,7 @@ export default function Dashboard({
                             setSelectedFloorNumber(floor.floorNumber);
                             setActiveTab('calendar');
                           }}
-                          className="flex-1 py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-all text-center cursor-pointer shadow-xs"
+                          className="flex-1 py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-all text-center cursor-pointer shadow-xs"
                         >
                           Book Slot
                         </button>
@@ -969,7 +928,7 @@ export default function Dashboard({
             }`}>
               <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-200 dark:border-slate-800">
                 <div>
-                  <h2 className={`text-xl font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  <h2 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
                     {currentFloor.labName}
                   </h2>
                   <p className={`text-xs font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
@@ -978,10 +937,10 @@ export default function Dashboard({
                 </div>
 
                 <div className="flex items-center gap-3 text-xs font-mono">
-                  <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-bold">
+                  <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold">
                     <span className="h-2 w-2 rounded-full bg-emerald-500" /> Online
                   </span>
-                  <span className="flex items-center gap-1 text-slate-400 font-bold">
+                  <span className="flex items-center gap-1 text-slate-400 font-semibold">
                     <span className="h-2 w-2 rounded-full bg-slate-400" /> Powered Off
                   </span>
                 </div>
@@ -1004,7 +963,7 @@ export default function Dashboard({
               }`}>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h4 className={`text-sm font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    <h4 className={`text-sm font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
                       {selectedDevice.name} ({selectedDevice.id})
                     </h4>
                     <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${
@@ -1028,7 +987,7 @@ export default function Dashboard({
                     <button
                       type="button"
                       onClick={() => handleTogglePower(selectedDevice.id)}
-                      className={`py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      className={`py-2 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                         selectedDevice.isPoweredOn
                           ? 'bg-rose-600 hover:bg-rose-700 text-white'
                           : 'bg-emerald-600 hover:bg-emerald-700 text-white'
@@ -1095,7 +1054,7 @@ export default function Dashboard({
           <div className={`w-full max-w-sm rounded-2xl border p-6 shadow-2xl ${
             isDark ? 'bg-slate-850 border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-900'
           }`}>
-            <h3 className="text-base font-black">
+            <h3 className="text-base font-bold">
               {powerActionPending.type === 'master_off' ? 'Confirm Floor Power Down' : 'Confirm Floor Power Up'}
             </h3>
             <p className="text-xs text-slate-500 mt-2">

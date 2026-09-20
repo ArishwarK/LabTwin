@@ -94,20 +94,18 @@ export default function Login({ onLogin, theme, onToggleTheme }: LoginProps) {
 
           <div className="space-y-1">
             <div className="flex items-center justify-center gap-1.5">
-              <span className="text-[10px] font-black uppercase tracking-widest text-amber-300">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-amber-300">
                 COIMBATORE INSTITUTE OF TECHNOLOGY
               </span>
             </div>
             
             {/* LabTwin Name */}
-            <div className="flex items-center justify-center text-2xl font-black tracking-tight text-white pt-1">
+            <div className="flex items-center justify-center text-2xl font-bold tracking-tight text-white pt-1">
               <span>Lab</span>
               <span className="text-amber-300">Twin</span>
             </div>
             
-            <p className="text-xs text-blue-100 font-mono">
-              Centralized Campus Laboratory Monitoring Portal
-            </p>
+            
           </div>
         </div>
 
@@ -116,7 +114,7 @@ export default function Login({ onLogin, theme, onToggleTheme }: LoginProps) {
           
           {/* Quick 1-Click Access */}
           <div>
-            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 text-center ${
+            <label className={`block text-xs font-medium uppercase tracking-wider mb-2 text-center ${
               isDark ? 'text-slate-400' : 'text-slate-600'
             }`}>
               Select Account Role
@@ -126,7 +124,7 @@ export default function Login({ onLogin, theme, onToggleTheme }: LoginProps) {
                 type="button"
                 id="login-quick-admin-btn"
                 onClick={() => fillCredentials('admin')}
-                className={`py-2.5 px-3 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-1.5 cursor-pointer ${
+                className={`py-2.5 px-3 rounded-xl text-xs font-semibold transition-all border flex items-center justify-center gap-1.5 cursor-pointer ${
                   role === 'admin'
                     ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
                     : isDark
@@ -142,7 +140,7 @@ export default function Login({ onLogin, theme, onToggleTheme }: LoginProps) {
                 type="button"
                 id="login-quick-student-btn"
                 onClick={() => fillCredentials('student')}
-                className={`py-2.5 px-3 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-1.5 cursor-pointer ${
+                className={`py-2.5 px-3 rounded-xl text-xs font-semibold transition-all border flex items-center justify-center gap-1.5 cursor-pointer ${
                   role === 'student'
                     ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
                     : isDark
@@ -164,7 +162,7 @@ export default function Login({ onLogin, theme, onToggleTheme }: LoginProps) {
             )}
 
             <div>
-              <label className={`block text-xs font-bold uppercase tracking-wider mb-1 ${
+              <label className={`block text-xs font-medium uppercase tracking-wider mb-1 ${
                 isDark ? 'text-slate-300' : 'text-slate-700'
               }`}>
                 Institutional Username / ID
@@ -187,7 +185,7 @@ export default function Login({ onLogin, theme, onToggleTheme }: LoginProps) {
             </div>
 
             <div>
-              <label className={`block text-xs font-bold uppercase tracking-wider mb-1 ${
+              <label className={`block text-xs font-medium uppercase tracking-wider mb-1 ${
                 isDark ? 'text-slate-300' : 'text-slate-700'
               }`}>
                 Password
@@ -212,7 +210,7 @@ export default function Login({ onLogin, theme, onToggleTheme }: LoginProps) {
             <button
               type="submit"
               id="login-submit-btn"
-              className="w-full py-3 px-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-md flex items-center justify-center gap-2 text-white bg-blue-600 hover:bg-blue-700"
+              className="w-full py-3 px-4 rounded-xl font-semibold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-md flex items-center justify-center gap-2 text-white bg-blue-600 hover:bg-blue-700"
             >
               <LogIn className="h-4 w-4" />
               <span>Enter {role === 'admin' ? 'Faculty Admin Dashboard' : 'Student View'}</span>

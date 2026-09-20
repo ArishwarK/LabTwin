@@ -52,10 +52,10 @@ export default function BlockElevationNav({
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className={`text-xs font-black uppercase tracking-wider ${isDark ? 'text-white' : 'text-blue-950'}`}>
+              <h2 className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-white' : 'text-blue-950'}`}>
                 Library Block (Block-A) • Architectural Floor Elevation
               </h2>
-              <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full uppercase tracking-wider ${
+              <span className={`px-2 py-0.5 text-[10px] font-semibold rounded-full uppercase tracking-wider ${
                 isDark 
                   ? 'bg-blue-900/50 text-blue-300 border border-blue-700' 
                   : 'bg-blue-100 text-blue-800 border border-blue-200'
@@ -87,8 +87,8 @@ export default function BlockElevationNav({
               className={`p-4 rounded-xl border transition-all relative ${
                 isSelected
                   ? isDark
-                    ? 'bg-slate-800 border-blue-500 ring-2 ring-blue-500/40 shadow-md'
-                    : 'bg-blue-50/90 border-blue-600 ring-2 ring-blue-500/30 shadow-sm'
+                  ? 'bg-slate-800 border-blue-500 ring-2 ring-blue-500/40 shadow-md'
+                  : 'bg-blue-50/90 border-blue-600 ring-2 ring-blue-500/30 shadow-sm'
                   : isDark
                     ? 'bg-slate-800/60 border-slate-700 hover:border-blue-500/50 hover:bg-slate-800'
                     : 'bg-white border-slate-200 hover:border-blue-300 hover:bg-slate-50'
@@ -106,8 +106,8 @@ export default function BlockElevationNav({
                         ? 'bg-slate-700 text-slate-300 border-slate-600'
                         : 'bg-slate-100 text-slate-700 border-slate-200'
                   }`}>
-                    <span className="text-[10px] uppercase font-bold tracking-tighter">LEVEL</span>
-                    <span className="text-lg font-black leading-none">
+                    <span className="text-[10px] uppercase font-semibold tracking-tighter">LEVEL</span>
+                    <span className="text-lg font-bold leading-none">
                       {floor.floorNumber === 0 ? 'GF' : `${floor.floorNumber}F`}
                     </span>
                   </div>

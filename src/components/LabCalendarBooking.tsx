@@ -680,7 +680,7 @@ export default function LabCalendarBooking({
 
             <div>
               <div className="flex items-center gap-2">
-                <h3 className={`text-sm font-black uppercase tracking-wider ${isDark ? 'text-white' : 'text-blue-950'}`}>
+                <h3 className={`text-sm font-bold uppercase tracking-wider ${isDark ? 'text-white' : 'text-blue-950'}`}>
                   CIT Lab Slot Scheduling & Calendar Integration
                 </h3>
                 {googleToken ? (
@@ -901,7 +901,7 @@ export default function LabCalendarBooking({
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 pb-2 border-b border-slate-200 dark:border-slate-700">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                <h3 className={`text-xs font-black uppercase tracking-wider ${isDark ? 'text-white' : 'text-blue-950'}`}>
+                <h3 className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-white' : 'text-blue-950'}`}>
                   Period Availability • {activeFocusFloor.floorNumber === 0 ? 'GF' : `${activeFocusFloor.floorNumber}F`}: {activeFocusFloor.labName} ({activeFocusFloor.roomNumber})
                 </h3>
               </div>
@@ -942,10 +942,10 @@ export default function LabCalendarBooking({
                   >
                     <div>
                       <div className="flex items-center justify-between gap-1 mb-1.5">
-                        <span className="text-[10px] font-mono font-black uppercase px-1.5 py-0.5 rounded bg-black/10 dark:bg-white/10">
+                        <span className="text-[10px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-black/10 dark:bg-white/10">
                           {slot.id}
                         </span>
-                        <span className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded ${
+                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${
                           isBooked 
                             ? 'bg-rose-500 text-white shadow-2xs' 
                             : 'bg-emerald-600 text-white shadow-2xs'
@@ -954,7 +954,7 @@ export default function LabCalendarBooking({
                         </span>
                       </div>
 
-                      <div className="text-xs font-mono font-black text-slate-800 dark:text-slate-200">
+                      <div className="text-xs font-mono font-bold text-slate-800 dark:text-slate-200">
                         {slot.start} - {slot.end}
                       </div>
                       <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
@@ -1010,7 +1010,7 @@ export default function LabCalendarBooking({
         }`}>
           <div className="flex items-center gap-2">
             <CalendarDays className="h-4 w-4 text-blue-500" />
-            <h3 className={`text-xs font-black uppercase tracking-wider ${isDark ? 'text-white' : 'text-blue-950'}`}>
+            <h3 className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-white' : 'text-blue-950'}`}>
               Lab Schedule for {formatLocalDate(selectedDate)}
             </h3>
           </div>
@@ -1210,7 +1210,7 @@ export default function LabCalendarBooking({
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <CalendarIcon className="h-4 w-4 text-blue-500" />
-              <h3 className={`text-xs font-black uppercase tracking-wider ${isDark ? 'text-white' : 'text-blue-950'}`}>
+              <h3 className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-white' : 'text-blue-950'}`}>
                 Upcoming Events From Your Google Calendar (Next 7 Days)
               </h3>
             </div>
@@ -1300,7 +1300,7 @@ export default function LabCalendarBooking({
                   <CalendarIcon className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-black uppercase tracking-wider">
+                  <h3 className="text-sm font-bold uppercase tracking-wider">
                     Reserve Laboratory Slot
                   </h3>
                   <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
@@ -1472,7 +1472,7 @@ export default function LabCalendarBooking({
                 <div className="p-3.5 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-700 dark:text-rose-300 text-xs flex items-start gap-2.5 animate-in fade-in">
                   <AlertCircle className="h-5 w-5 flex-shrink-0 text-rose-600 dark:text-rose-400 mt-0.5" />
                   <div>
-                    <span className="font-black uppercase tracking-wide block text-rose-800 dark:text-rose-200">
+                    <span className="font-bold uppercase tracking-wide block text-rose-800 dark:text-rose-200">
                       Slot Conflict Detected • Laboratory Already Booked
                     </span>
                     <p className="mt-0.5 leading-relaxed font-sans">
@@ -1716,7 +1716,7 @@ export default function LabCalendarBooking({
                 )}
               </div>
               <div>
-                <h4 className="text-sm font-black uppercase tracking-wider">
+                <h4 className="text-sm font-bold uppercase tracking-wider">
                   {confirmationPendingData.type === 'create'
                     ? 'Confirm Lab Slot Reservation'
                     : 'Confirm Slot Cancellation'}
