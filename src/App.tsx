@@ -29,27 +29,10 @@ function safeSetItem(key: string, value: string): void {
 }
 
 export default function App() {
-  // Initialize with active admin session so application is instantly visible and usable
-  const [session, setSession] = useState<UserSession | null>(() => {
-    const saved = safeGetItem('college_lab_session');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (parsed?.username && (parsed?.role === 'admin' || parsed?.role === 'student')) {
-          return parsed;
-        }
-      } catch {
-        // Fallback to default
-      }
-    }
-    // Default to faculty admin for instant working preview
-    return {
-      username: 'Dr. Faculty Admin',
-      role: 'admin',
-    };
-  });
+  // Session starts as null so the login page MUST open first. No access without login!
+  const [session, setSession] = useState<UserSession | null>(null);
   
-  // Theme state: default to 'light' for clean college enterprise webapp, toggleable to 'dark'
+  // Theme state: default to 'light' for clean, modern aesthetic, toggleable to 'dark'
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const saved = safeGetItem('college_lab_theme');
     if (saved === 'dark' || saved === 'light') return saved;
@@ -67,12 +50,6 @@ export default function App() {
     }
   }, [theme]);
 
-  useEffect(() => {
-    if (session) {
-      safeSetItem('college_lab_session', JSON.stringify(session));
-    }
-  }, [session]);
-
   const toggleTheme = () => {
     setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
   };
@@ -80,7 +57,6 @@ export default function App() {
   const handleLogin = (username: string, role: 'admin' | 'student') => {
     const newSession = { username, role };
     setSession(newSession);
-    safeSetItem('college_lab_session', JSON.stringify(newSession));
   };
 
   const handleLogout = () => {
@@ -100,12 +76,17 @@ export default function App() {
       username: role === 'admin' ? 'Dr. Faculty Admin' : 'Student Scholar'
     };
     setSession(updatedSession);
-    safeSetItem('college_lab_session', JSON.stringify(updatedSession));
   };
 
   return (
     <div id="app-root-container" className={theme === 'dark' ? 'dark' : ''}>
-      {session ? (
+      {!session ? (
+        <Login
+          onLogin={handleLogin}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+        />
+      ) : (
         <Dashboard
           currentUser={session}
           onLogout={handleLogout}
@@ -113,14 +94,7 @@ export default function App() {
           theme={theme}
           onToggleTheme={toggleTheme}
         />
-      ) : (
-        <Login 
-          onLogin={handleLogin} 
-          theme={theme} 
-          onToggleTheme={toggleTheme} 
-        />
       )}
     </div>
   );
 }
-

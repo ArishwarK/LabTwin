@@ -24,13 +24,13 @@ export default function Login({ onLogin, theme, onToggleTheme }: LoginProps) {
 
     if (role === 'admin') {
       if (username.toLowerCase() === 'admin' && password === 'admin') {
-        onLogin(username, 'admin');
+        onLogin('Dr. Faculty Admin', 'admin');
       } else {
         setError('Invalid Faculty Administrator credentials. Use "admin" / "admin".');
       }
     } else {
       if (username.toLowerCase() === 'student' && password === 'student') {
-        onLogin(username, 'student');
+        onLogin('Student Scholar', 'student');
       } else {
         setError('Invalid Student portal credentials. Use "student" / "student".');
       }
@@ -44,42 +44,50 @@ export default function Login({ onLogin, theme, onToggleTheme }: LoginProps) {
     setError('');
   };
 
+  const quickDirectLogin = (selectedRole: 'admin' | 'student') => {
+    if (selectedRole === 'admin') {
+      onLogin('Dr. Faculty Admin', 'admin');
+    } else {
+      onLogin('Student Scholar', 'student');
+    }
+  };
+
   return (
     <div className={`min-h-screen flex flex-col items-center justify-center p-4 transition-colors ${
-      isDark ? 'bg-slate-900 text-slate-100' : 'bg-slate-100 text-slate-900'
+      isDark ? 'bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-900'
     }`}>
       
       {/* Top right theme toggle */}
-      <div className="absolute top-4 right-4">
+      <div className="absolute top-5 right-5">
         <button
           type="button"
           onClick={onToggleTheme}
-          className={`p-2 rounded-lg border flex items-center gap-1.5 text-xs font-semibold cursor-pointer transition-colors ${
+          className={`p-2.5 rounded-xl border flex items-center gap-2 text-xs font-bold cursor-pointer transition-colors ${
             isDark 
-              ? 'bg-slate-800 border-slate-700 text-blue-400 hover:bg-slate-750' 
-              : 'bg-white border-slate-300 text-blue-800 hover:bg-blue-50 shadow-sm'
+              ? 'bg-slate-800 border-slate-700 text-amber-400 hover:bg-slate-750' 
+              : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100 shadow-xs'
           }`}
           title="Toggle Light / Dark Theme"
         >
           {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          <span>{isDark ? 'Light Theme' : 'Dark Theme'}</span>
+          <span>{isDark ? 'Light' : 'Dark'}</span>
         </button>
       </div>
 
-      <div className={`w-full max-w-md rounded-2xl border shadow-xl overflow-hidden transition-colors ${
+      <div className={`w-full max-w-md rounded-3xl border shadow-xl overflow-hidden transition-colors ${
         isDark ? 'bg-slate-850 border-slate-700' : 'bg-white border-slate-200'
       }`}>
         
-        {/* Institutional College Header */}
+        {/* LabTwin Header */}
         <div className={`p-6 text-center border-b ${
-          isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-blue-800 text-white border-blue-900'
+          isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-gradient-to-b from-blue-700 to-blue-800 text-white border-blue-900'
         }`}>
-          {/* Official Round Logo Image */}
+          {/* CIT Logo */}
           <div className="relative inline-block mb-3">
             <img 
               src="/cit_logo.jpg" 
               alt="Coimbatore Institute of Technology Seal"
-              className="h-20 w-20 rounded-full object-cover shadow-lg ring-4 ring-white/50 mx-auto bg-white"
+              className="h-16 w-16 rounded-full object-cover shadow-md ring-4 ring-white/30 mx-auto bg-white"
               referrerPolicy="no-referrer"
             />
           </div>
@@ -90,11 +98,15 @@ export default function Login({ onLogin, theme, onToggleTheme }: LoginProps) {
                 COIMBATORE INSTITUTE OF TECHNOLOGY
               </span>
             </div>
-            <h2 className="text-base sm:text-lg font-black tracking-tight text-white">
-              Laboratory Monitoring System
-            </h2>
-            <p className="text-xs text-blue-200 font-mono">
-              Library Block (Block-A) • Digital Twin Portal
+            
+            {/* LabTwin Name */}
+            <div className="flex items-center justify-center text-2xl font-black tracking-tight text-white pt-1">
+              <span>Lab</span>
+              <span className="text-amber-300">Twin</span>
+            </div>
+            
+            <p className="text-xs text-blue-100 font-mono">
+              Centralized Campus Laboratory Monitoring Portal
             </p>
           </div>
         </div>
@@ -102,23 +114,21 @@ export default function Login({ onLogin, theme, onToggleTheme }: LoginProps) {
         {/* Form Body */}
         <div className="p-6 sm:p-7 space-y-5">
           
-          {/* Quick Autofill Role Switcher */}
+          {/* Quick 1-Click Access */}
           <div>
             <label className={`block text-xs font-bold uppercase tracking-wider mb-2 text-center ${
               isDark ? 'text-slate-400' : 'text-slate-600'
             }`}>
-              Select Portal Account (Quick Demo Access)
+              Select Account Role
             </label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2.5">
               <button
                 type="button"
                 id="login-quick-admin-btn"
                 onClick={() => fillCredentials('admin')}
-                className={`py-2 px-3 rounded-lg text-xs font-bold transition-all border flex items-center justify-center gap-1.5 cursor-pointer ${
+                className={`py-2.5 px-3 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-1.5 cursor-pointer ${
                   role === 'admin'
-                    ? isDark
-                      ? 'bg-blue-600 text-white border-blue-500 shadow-sm'
-                      : 'bg-blue-700 text-white border-blue-700 shadow-sm'
+                    ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
                     : isDark
                       ? 'bg-slate-800 text-slate-300 border-slate-700 hover:border-blue-500'
                       : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-blue-50/60'
@@ -132,11 +142,9 @@ export default function Login({ onLogin, theme, onToggleTheme }: LoginProps) {
                 type="button"
                 id="login-quick-student-btn"
                 onClick={() => fillCredentials('student')}
-                className={`py-2 px-3 rounded-lg text-xs font-bold transition-all border flex items-center justify-center gap-1.5 cursor-pointer ${
+                className={`py-2.5 px-3 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-1.5 cursor-pointer ${
                   role === 'student'
-                    ? isDark
-                      ? 'bg-blue-600 text-white border-blue-500 shadow-sm'
-                      : 'bg-blue-700 text-white border-blue-700 shadow-sm'
+                    ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
                     : isDark
                       ? 'bg-slate-800 text-slate-300 border-slate-700 hover:border-blue-500'
                       : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-blue-50/60'
@@ -150,7 +158,7 @@ export default function Login({ onLogin, theme, onToggleTheme }: LoginProps) {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="p-3 bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 rounded-lg text-xs font-mono">
+              <div className="p-3 bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 rounded-xl text-xs font-mono">
                 {error}
               </div>
             )}
@@ -168,13 +176,13 @@ export default function Login({ onLogin, theme, onToggleTheme }: LoginProps) {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="Enter username"
-                  className={`w-full px-3 py-2 pl-9 rounded-lg text-xs font-mono transition-colors border focus:outline-none ${
+                  className={`w-full px-3 py-2.5 pl-9 rounded-xl text-xs font-mono transition-colors border focus:outline-none ${
                     isDark 
                       ? 'bg-slate-800 border-slate-700 text-white focus:border-blue-500' 
                       : 'bg-white border-slate-300 text-slate-900 focus:border-blue-600'
                   }`}
                 />
-                <UserCheck className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+                <UserCheck className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
               </div>
             </div>
 
@@ -191,37 +199,47 @@ export default function Login({ onLogin, theme, onToggleTheme }: LoginProps) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter password"
-                  className={`w-full px-3 py-2 pl-9 rounded-lg text-xs font-mono transition-colors border focus:outline-none ${
+                  className={`w-full px-3 py-2.5 pl-9 rounded-xl text-xs font-mono transition-colors border focus:outline-none ${
                     isDark 
                       ? 'bg-slate-800 border-slate-700 text-white focus:border-blue-500' 
                       : 'bg-white border-slate-300 text-slate-900 focus:border-blue-600'
                   }`}
                 />
-                <Lock className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+                <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
               </div>
             </div>
 
             <button
               type="submit"
               id="login-submit-btn"
-              className="w-full py-2.5 px-4 rounded-lg font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-md flex items-center justify-center gap-2 text-white bg-blue-600 hover:bg-blue-700"
+              className="w-full py-3 px-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-md flex items-center justify-center gap-2 text-white bg-blue-600 hover:bg-blue-700"
             >
               <LogIn className="h-4 w-4" />
-              <span>Enter {role === 'admin' ? 'Faculty Admin Dashboard' : 'Student Laboratory View'}</span>
+              <span>Enter {role === 'admin' ? 'Faculty Admin Dashboard' : 'Student View'}</span>
             </button>
           </form>
 
-          {/* Academic Block Architecture Note */}
-          <div className={`p-3 rounded-lg border text-xs ${
-            isDark ? 'bg-slate-800/60 border-slate-700 text-slate-400' : 'bg-blue-50/60 border-blue-100 text-slate-600'
-          }`}>
-            <div className="flex items-center gap-1.5 font-bold mb-1 text-blue-700 dark:text-blue-400">
-              <Building2 className="h-4 w-4" />
-              <span>Library Block Facility Network</span>
+          {/* Instant 1-Click Entry option */}
+          <div className="pt-2 border-t border-slate-200 dark:border-slate-700/80">
+            <div className="text-center mb-2">
+              <span className="text-[11px] font-mono text-slate-400">One-click Instant Demo Sign In</span>
             </div>
-            <p className="text-[11px] leading-relaxed">
-              Equipped for <strong>Library Block (Block-A)</strong> with 5 floor levels, each monitoring 1 dedicated departmental laboratory in real time.
-            </p>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => quickDirectLogin('admin')}
+                className="py-2 px-2 text-[11px] font-bold rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-200 cursor-pointer"
+              >
+                Instant Faculty Access
+              </button>
+              <button
+                type="button"
+                onClick={() => quickDirectLogin('student')}
+                className="py-2 px-2 text-[11px] font-bold rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-200 cursor-pointer"
+              >
+                Instant Student Access
+              </button>
+            </div>
           </div>
 
         </div>

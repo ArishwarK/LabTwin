@@ -61,20 +61,26 @@ export const createCalendarEvent = async (
 ): Promise<GoogleCalendarEvent> => {
   const timeZone = eventData.timeZone || 'Asia/Kolkata';
 
-  // Construct ISO 8601 strings with timezone offset (+05:30 for Asia/Kolkata or local)
-  const startDateTime = `${eventData.startDate}T${eventData.startTime}:00`;
-  const endDateTime = `${eventData.endDate}T${eventData.endTime}:00`;
+  // Construct RFC3339 strings with explicit timezone offset for Asia/Kolkata (+05:30)
+  // to avoid incorrect shifts when the client machine is in another timezone
+  const offset = timeZone === 'Asia/Kolkata' ? '+05:30' : '';
+  const startDateTime = offset 
+    ? `${eventData.startDate}T${eventData.startTime}:00${offset}`
+    : new Date(`${eventData.startDate}T${eventData.startTime}:00`).toISOString();
+  const endDateTime = offset
+    ? `${eventData.endDate}T${eventData.endTime}:00${offset}`
+    : new Date(`${eventData.endDate}T${eventData.endTime}:00`).toISOString();
 
   const payload: Record<string, any> = {
     summary: eventData.summary,
     description: eventData.description,
     location: eventData.location,
     start: {
-      dateTime: new Date(startDateTime).toISOString(),
+      dateTime: startDateTime,
       timeZone: timeZone,
     },
     end: {
-      dateTime: new Date(endDateTime).toISOString(),
+      dateTime: endDateTime,
       timeZone: timeZone,
     },
     colorId: '9', // Blueberry / Navy Blue in Google Calendar
