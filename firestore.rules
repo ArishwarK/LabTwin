@@ -1,0 +1,101 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isSuperAdmin() {
+      return isSignedIn() && request.auth.token.email == 'arish2712007@gmail.com';
+    }
+
+    function isAdmin() {
+      return isSuperAdmin() || (isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function isValidBooking(data) {
+      return data.keys().hasAll(['id', 'labId', 'floorNumber', 'roomNumber', 'date', 'startTime', 'endTime', 'courseCode', 'organizer', 'status'])
+        && data.id is string && data.id.size() <= 128
+        && data.labId is string && data.labId.size() <= 64
+        && data.floorNumber is number
+        && data.roomNumber is string && data.roomNumber.size() <= 32
+        && data.date is string && data.date.size() <= 16
+        && data.startTime is string && data.startTime.size() <= 16
+        && data.endTime is string && data.endTime.size() <= 16
+        && data.courseCode is string && data.courseCode.size() <= 64
+        && data.organizer is string && data.organizer.size() <= 128
+        && data.status in ['confirmed', 'in-progress', 'completed', 'cancelled'];
+    }
+
+    function isValidDeviceState(data) {
+      return data.keys().hasAll(['id', 'labId', 'floorNumber', 'name', 'isOnline', 'isPoweredOn'])
+        && data.id is string && data.id.size() <= 128
+        && data.labId is string && data.labId.size() <= 64
+        && data.floorNumber is number
+        && data.name is string && data.name.size() <= 128
+        && data.isOnline is bool
+        && data.isPoweredOn is bool;
+    }
+
+    function isValidLog(data) {
+      return data.keys().hasAll(['id', 'timestamp', 'performedBy', 'role', 'eventType', 'description'])
+        && data.id is string && data.id.size() <= 128
+        && data.timestamp is string && data.timestamp.size() <= 64
+        && data.performedBy is string && data.performedBy.size() <= 128
+        && data.role in ['admin', 'system', 'student']
+        && data.eventType in ['power', 'network', 'system', 'user']
+        && data.description is string && data.description.size() <= 500;
+    }
+
+    // 1. Users collection
+    match /users/{userId} {
+      allow get: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isSignedIn() && request.auth.uid == userId;
+      allow update: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    // 2. Admins collection
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if isSuperAdmin();
+    }
+
+    // 3. Lab Slot Bookings collection
+    match /bookings/{bookingId} {
+      allow read: if true;
+      allow create: if isValidId(bookingId) && isValidBooking(incoming());
+      allow update: if isValidId(bookingId) && isValidBooking(incoming());
+      allow delete: if true;
+    }
+
+    // 4. Digital Twin Device States collection
+    match /devices/{deviceId} {
+      allow read: if true;
+      allow create, update: if isValidId(deviceId) && isValidDeviceState(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // 5. System & Telemetry Activity Logs collection
+    match /activity_logs/{logId} {
+      allow read: if true;
+      allow create: if isValidId(logId) && isValidLog(incoming());
+      allow update, delete: if isAdmin();
+    }
+  }
+}

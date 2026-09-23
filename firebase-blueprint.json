@@ -1,0 +1,104 @@
+{
+  "entities": {
+    "LabBooking": {
+      "title": "LabBooking",
+      "description": "Represents an academic laboratory reservation slot",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "labId": { "type": "string", "maxLength": 64 },
+        "labName": { "type": "string", "maxLength": 128 },
+        "floorNumber": { "type": "number" },
+        "roomNumber": { "type": "string", "maxLength": 32 },
+        "date": { "type": "string", "maxLength": 16 },
+        "startTime": { "type": "string", "maxLength": 16 },
+        "endTime": { "type": "string", "maxLength": 16 },
+        "courseCode": { "type": "string", "maxLength": 64 },
+        "courseTitle": { "type": "string", "maxLength": 128 },
+        "organizer": { "type": "string", "maxLength": 128 },
+        "organizerEmail": { "type": "string", "maxLength": 128 },
+        "role": { "type": "string", "maxLength": 64 },
+        "batch": { "type": "string", "maxLength": 64 },
+        "attendance": { "type": "number" },
+        "equipmentRequirements": { "type": "string", "maxLength": 500 },
+        "purposeNotes": { "type": "string", "maxLength": 500 },
+        "status": {
+          "type": "string",
+          "enum": ["confirmed", "in-progress", "completed", "cancelled"]
+        },
+        "syncedToGoogleCalendar": { "type": "boolean" },
+        "googleCalendarEventId": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "labId", "floorNumber", "roomNumber", "date", "startTime", "endTime", "courseCode", "organizer", "status"]
+    },
+    "LabDeviceState": {
+      "title": "LabDeviceState",
+      "description": "Stores state and telemetry of hardware devices in the lab digital twin",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "labId": { "type": "string", "maxLength": 64 },
+        "floorNumber": { "type": "number" },
+        "name": { "type": "string", "maxLength": 128 },
+        "isOnline": { "type": "boolean" },
+        "isPoweredOn": { "type": "boolean" },
+        "energyUsage": { "type": "number" },
+        "lastPing": { "type": "string", "maxLength": 64 },
+        "updatedBy": { "type": "string", "maxLength": 128 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "labId", "floorNumber", "name", "isOnline", "isPoweredOn"]
+    },
+    "ActivityLog": {
+      "title": "ActivityLog",
+      "description": "Telemetry and user action audit log event",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "timestamp": { "type": "string", "maxLength": 64 },
+        "performedBy": { "type": "string", "maxLength": 128 },
+        "role": { "type": "string", "enum": ["admin", "system", "student"] },
+        "labId": { "type": "string", "maxLength": 64 },
+        "floorNumber": { "type": "number" },
+        "deviceId": { "type": "string", "maxLength": 128 },
+        "deviceName": { "type": "string", "maxLength": 128 },
+        "eventType": { "type": "string", "enum": ["power", "network", "system", "user"] },
+        "description": { "type": "string", "maxLength": 500 }
+      },
+      "required": ["id", "timestamp", "performedBy", "role", "eventType", "description"]
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile with role details",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 128 },
+        "displayName": { "type": "string", "maxLength": 128 },
+        "role": { "type": "string", "enum": ["admin", "student"] },
+        "createdAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["uid", "email", "role"]
+    }
+  },
+  "firestore": {
+    "/bookings/{bookingId}": {
+      "schema": "LabBooking",
+      "description": "Collection of all laboratory bookings and reservations"
+    },
+    "/devices/{deviceId}": {
+      "schema": "LabDeviceState",
+      "description": "Real-time state and power status of lab devices"
+    },
+    "/activity_logs/{logId}": {
+      "schema": "ActivityLog",
+      "description": "Centralized system and telemetry activity audit logs"
+    },
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Registered faculty and student profile details"
+    }
+  }
+}

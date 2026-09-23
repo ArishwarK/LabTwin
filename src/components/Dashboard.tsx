@@ -5,6 +5,15 @@ import { LabDevice, ActivityLog, LabBookingSlot, FloorLabInfo } from '../types';
 import LabFloorPlan from './LabFloorPlan';
 import LabCalendarBooking from './LabCalendarBooking';
 import { 
+  subscribeToBookings, 
+  saveBookingToFirestore, 
+  deleteBookingFromFirestore,
+  subscribeToDeviceStates,
+  saveDeviceStateToFirestore,
+  subscribeToActivityLogs,
+  saveActivityLogToFirestore
+} from '../services/firestore';
+import { 
   Building2, 
   Power, 
   Wifi, 
@@ -32,7 +41,8 @@ import {
   LogIn,
   LayoutGrid,
   Menu,
-  ChevronDown
+  ChevronDown,
+  Database
 } from 'lucide-react';
 
 interface UserSession {
@@ -84,7 +94,7 @@ export default function Dashboard({
   // Google-style user profile initial and institutional identity
   const userInitial = (currentUser.username || 'User').trim().charAt(0).toUpperCase();
 
-  // Bookings state (persisted locally)
+  // Bookings state (initialized from storage, synchronized via Firestore)
   const [bookings, setBookings] = useState<LabBookingSlot[]>(() => {
     try {
       if (typeof window !== 'undefined' && window.localStorage) {
@@ -102,7 +112,7 @@ export default function Dashboard({
     return INITIAL_BOOKINGS;
   });
 
-  // Sync bookings to localStorage
+  // Sync bookings to localStorage cache
   useEffect(() => {
     try {
       if (typeof window !== 'undefined' && window.localStorage) {
@@ -117,6 +127,58 @@ export default function Dashboard({
   const [devices, setDevices] = useState<LabDevice[]>(INITIAL_DEVICES);
   const [logs, setLogs] = useState<ActivityLog[]>(INITIAL_LOGS);
   const [selectedDevice, setSelectedDevice] = useState<LabDevice | null>(null);
+  const [isFirestoreConnected, setIsFirestoreConnected] = useState<boolean>(true);
+
+  // Firestore Realtime Synchronization
+  useEffect(() => {
+    // 1. Subscribe to Bookings from Firestore
+    const unsubBookings = subscribeToBookings(
+      (remoteBookings) => {
+        if (remoteBookings && remoteBookings.length > 0) {
+          setBookings(remoteBookings);
+        } else {
+          // Seed Firestore with initial schedule if collection is empty
+          INITIAL_BOOKINGS.forEach((initB) => {
+            saveBookingToFirestore(initB).catch(() => {});
+          });
+        }
+        setIsFirestoreConnected(true);
+      },
+      (err) => {
+        console.warn('Firestore bookings sync error:', err);
+      }
+    );
+
+    // 2. Subscribe to Device States from Firestore
+    const unsubDevices = subscribeToDeviceStates((stateMap) => {
+      setDevices(prev => 
+        prev.map(d => {
+          if (stateMap[d.id]) {
+            return {
+              ...d,
+              isOnline: stateMap[d.id].isOnline ?? d.isOnline,
+              isPoweredOn: stateMap[d.id].isPoweredOn ?? d.isPoweredOn,
+              energyUsage: stateMap[d.id].energyUsage ?? d.energyUsage,
+            };
+          }
+          return d;
+        })
+      );
+    });
+
+    // 3. Subscribe to Activity Logs from Firestore
+    const unsubLogs = subscribeToActivityLogs((remoteLogs) => {
+      if (remoteLogs && remoteLogs.length > 0) {
+        setLogs(remoteLogs);
+      }
+    });
+
+    return () => {
+      unsubBookings();
+      unsubDevices();
+      unsubLogs();
+    };
+  }, []);
 
   // Power confirmation modal state
   const [powerActionPending, setPowerActionPending] = useState<{
@@ -152,9 +214,11 @@ export default function Dashboard({
     }
   }, [selectedFloorNumber]);
 
-  // Booking handlers
+  // Booking handlers with Firestore sync
   const handleAddBooking = (newBooking: LabBookingSlot) => {
     setBookings(prev => [newBooking, ...prev]);
+    saveBookingToFirestore(newBooking).catch(err => console.warn('Firestore booking save error:', err));
+
     const newLog: ActivityLog = {
       id: `LOG-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
       timestamp: new Date().toISOString(),
@@ -168,11 +232,14 @@ export default function Dashboard({
       description: `Lab slot reserved on ${newBooking.date} (${newBooking.startTime} - ${newBooking.endTime}).`
     };
     setLogs(prev => [newLog, ...prev]);
+    saveActivityLogToFirestore(newLog).catch(err => console.warn('Firestore log save error:', err));
   };
 
   const handleCancelBooking = (bookingId: string) => {
     const target = bookings.find(b => b.id === bookingId);
     setBookings(prev => prev.filter(b => b.id !== bookingId));
+    deleteBookingFromFirestore(bookingId).catch(err => console.warn('Firestore booking delete error:', err));
+
     if (target) {
       const newLog: ActivityLog = {
         id: `LOG-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
@@ -187,10 +254,11 @@ export default function Dashboard({
         description: `Slot reservation on ${target.date} was cancelled and released.`
       };
       setLogs(prev => [newLog, ...prev]);
+      saveActivityLogToFirestore(newLog).catch(err => console.warn('Firestore log save error:', err));
     }
   };
 
-  // Toggle Power (Admin only)
+  // Toggle Power (Admin only) with Firestore persistence
   const handleTogglePower = (deviceId: string) => {
     if (currentUser.role !== 'admin') {
       alert('Only Faculty Administrators can toggle hardware power relays.');
@@ -209,6 +277,7 @@ export default function Dashboard({
           if (selectedDevice?.id === deviceId) {
             setSelectedDevice(updated);
           }
+          saveDeviceStateToFirestore(updated).catch(err => console.warn('Firestore device update error:', err));
           return updated;
         }
         return d;
@@ -244,12 +313,14 @@ export default function Dashboard({
       prev.map(d => {
         if (d.floorNumber === selectedFloorNumber) {
           const baseWatt = d.category === 'server' ? 480 : d.category === 'peripheral' ? 85 : 120;
-          return {
+          const updated = {
             ...d,
             isPoweredOn: turnOn,
             energyUsage: turnOn ? baseWatt : 0,
             lastReboot: new Date().toISOString()
           };
+          saveDeviceStateToFirestore(updated).catch(() => {});
+          return updated;
         }
         return d;
       })
@@ -345,8 +416,24 @@ export default function Dashboard({
             </div>
           </div>
 
-          {/* Right: Theme Toggle and Menu Bar */}
+          {/* Right: Firebase Badge, Theme Toggle and Menu Bar */}
           <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            {/* Firebase Live Cloud Status Badge */}
+            <div 
+              id="badge-firebase-status"
+              className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-mono border transition-all ${
+                isFirestoreConnected
+                  ? isDark 
+                    ? 'bg-amber-950/40 border-amber-800/60 text-amber-300 shadow-2xs' 
+                    : 'bg-amber-50 border-amber-200 text-amber-800 shadow-2xs'
+                  : 'bg-slate-100 text-slate-500 border-slate-200'
+              }`}
+              title="Firebase Firestore Cloud Database is active and synchronizing live"
+            >
+              <Database className="h-3.5 w-3.5 text-amber-500 animate-pulse flex-shrink-0" />
+              <span className="font-semibold tracking-tight">Firebase Live</span>
+            </div>
+
             {/* Theme Toggle */}
             <button
               type="button"
