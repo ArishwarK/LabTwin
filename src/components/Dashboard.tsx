@@ -207,6 +207,10 @@ export default function Dashboard({
   // Find the selected floor's laboratory
   const currentFloor = COLLEGE_BLOCK.floors.find(f => f.floorNumber === selectedFloorNumber) || COLLEGE_BLOCK.floors[0];
   const currentLabDevices = devices.filter(d => d.floorNumber === currentFloor.floorNumber);
+  const floorPoweredDevices = currentLabDevices.filter(d => d.isPoweredOn);
+  const floorOnlineDevices = currentLabDevices.filter(d => d.isOnline);
+  const floorTotalWatts = floorPoweredDevices.reduce((sum, d) => sum + (d.energyUsage || 0), 0);
+  const isFloorPowered = floorPoweredDevices.length > 0;
 
   useEffect(() => {
     if (currentLabDevices.length > 0 && (!selectedDevice || selectedDevice.floorNumber !== selectedFloorNumber)) {
@@ -1023,12 +1027,62 @@ export default function Dashboard({
                   </p>
                 </div>
 
-                <div className="flex items-center gap-3 text-xs font-mono">
-                  <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold">
-                    <span className="h-2 w-2 rounded-full bg-emerald-500" /> Online
+                <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
+                  {/* Realtime Network Connectivity Status */}
+                  <span 
+                    className={`flex items-center gap-1.5 font-semibold px-2 py-0.5 rounded-md border ${
+                      floorOnlineDevices.length === currentLabDevices.length
+                        ? isDark ? 'bg-emerald-950/40 text-emerald-400 border-emerald-800/60' : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                        : floorOnlineDevices.length > 0
+                        ? isDark ? 'bg-amber-950/40 text-amber-400 border-amber-800/60' : 'bg-amber-50 text-amber-700 border-amber-200'
+                        : isDark ? 'bg-rose-950/40 text-rose-400 border-rose-800/60' : 'bg-rose-50 text-rose-700 border-rose-200'
+                    }`}
+                    title={`${floorOnlineDevices.length} of ${currentLabDevices.length} endpoints online`}
+                  >
+                    <span 
+                      className={`h-2 w-2 rounded-full ${
+                        floorOnlineDevices.length === currentLabDevices.length 
+                          ? 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]' 
+                          : floorOnlineDevices.length > 0
+                          ? 'bg-amber-500'
+                          : 'bg-rose-500'
+                      }`} 
+                    />
+                    <span>
+                      {floorOnlineDevices.length === currentLabDevices.length
+                        ? 'Online'
+                        : floorOnlineDevices.length > 0
+                        ? `Partial (${floorOnlineDevices.length}/${currentLabDevices.length})`
+                        : 'Offline'}
+                    </span>
                   </span>
-                  <span className="flex items-center gap-1 text-slate-400 font-semibold">
-                    <span className="h-2 w-2 rounded-full bg-slate-400" /> Powered Off
+
+                  {/* Realtime Relay Power Status */}
+                  <span 
+                    className={`flex items-center gap-1.5 font-semibold px-2 py-0.5 rounded-md border ${
+                      isFloorPowered
+                        ? isDark ? 'bg-blue-950/40 text-blue-400 border-blue-800/60' : 'bg-blue-50 text-blue-700 border-blue-200'
+                        : isDark ? 'bg-slate-800 text-slate-400 border-slate-700' : 'bg-slate-100 text-slate-600 border-slate-200'
+                    }`}
+                    title={`${floorPoweredDevices.length} of ${currentLabDevices.length} workstations powered on (${floorTotalWatts}W total)`}
+                  >
+                    <span 
+                      className={`h-2 w-2 rounded-full ${
+                        isFloorPowered 
+                          ? 'bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.6)] animate-pulse' 
+                          : 'bg-slate-400'
+                      }`} 
+                    />
+                    <span>
+                      {isFloorPowered 
+                        ? `Power ON (${floorPoweredDevices.length}/${currentLabDevices.length})` 
+                        : 'Power OFF'}
+                    </span>
+                    {isFloorPowered && (
+                      <span className="text-[10px] opacity-75 font-normal">
+                        • {floorTotalWatts}W
+                      </span>
+                    )}
                   </span>
                 </div>
               </div>
