@@ -557,10 +557,19 @@ export default function Dashboard({
                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-medium uppercase tracking-wider font-mono ${
                       currentUser.role === 'admin'
                         ? 'bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
-                        : 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
+                        : 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
                     }`}>
-                      <ShieldCheck className="h-3 w-3" />
-                      <span>{currentUser.role === 'admin' ? 'Faculty Admin' : 'Student Scholar'}</span>
+                      {currentUser.role === 'admin' ? (
+                        <>
+                          <ShieldCheck className="h-3 w-3" />
+                          <span>Faculty Admin (Full Access)</span>
+                        </>
+                      ) : (
+                        <>
+                          <UserCheck className="h-3 w-3" />
+                          <span>Student (View-Only)</span>
+                        </>
+                      )}
                     </span>
                   </div>
                 </div>
@@ -619,7 +628,7 @@ export default function Dashboard({
                     <span className="text-xs font-medium">View Twin</span>
                   </button>
 
-                  {/* Book Slot */}
+                  {/* Book Slot or View Schedule */}
                   <button
                     type="button"
                     id="sidebar-item-book-slot"
@@ -636,7 +645,9 @@ export default function Dashboard({
                     <div className={`p-2 rounded-xl flex-shrink-0 ${isDark ? 'bg-emerald-950/70 text-emerald-400' : 'bg-emerald-100 text-emerald-600'}`}>
                       <Calendar className="h-4 w-4" />
                     </div>
-                    <span className="text-xs font-medium">Book Slot</span>
+                    <span className="text-xs font-medium">
+                      {currentUser.role === 'admin' ? 'Book Lab Slot' : 'View Schedule (View-Only)'}
+                    </span>
                   </button>
 
                   {/* Power Relays */}
@@ -742,7 +753,7 @@ export default function Dashboard({
                         : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'
                     }`}
                   >
-                    Book Slot Now
+                    {currentUser.role === 'admin' ? 'Book Slot Now' : 'View Lab Schedules'}
                   </button>
                 </div>
               </div>
@@ -889,7 +900,7 @@ export default function Dashboard({
                           }}
                           className="flex-1 py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-all text-center cursor-pointer shadow-xs"
                         >
-                          Book Slot
+                          {currentUser.role === 'admin' ? 'Book Slot' : 'View Schedule'}
                         </button>
 
                         <button

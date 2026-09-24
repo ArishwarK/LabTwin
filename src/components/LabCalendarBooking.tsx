@@ -390,6 +390,12 @@ export default function LabCalendarBooking({
 
   // Open booking modal with automatic free slot detection
   const openBookingModalForLab = (floorNum: number, targetDate: string, preferredSlotId?: string) => {
+    // Strictly prevent student role from opening booking modal or reserving slots
+    if (currentUserRole === 'student') {
+      showToast('error', 'Access Restricted: Students have view-only access and cannot book lab slots. Please contact the faculty in-charge.');
+      return;
+    }
+
     setNewBookingFloorNum(floorNum);
     setNewBookingDate(targetDate);
     
@@ -419,18 +425,11 @@ export default function LabCalendarBooking({
       setCustomEndTime('10:45');
     }
 
-    // Pre-fill role-appropriate defaults
-    if (currentUserRole === 'student') {
-      setBatch('B.E. CSE Student Practice Group');
-      setAttendance(6);
-      if (!courseCode) setCourseCode('PROJ-CS');
-      if (!courseTitle) setCourseTitle('Student Team Practicum & Simulation Work');
-    } else {
-      setBatch('B.E. CSE III-A');
-      setAttendance(28);
-      if (!courseCode) setCourseCode('CS8611');
-      if (!courseTitle) setCourseTitle('AI & Deep Learning Practicum');
-    }
+    // Pre-fill faculty defaults
+    setBatch('B.E. CSE III-A');
+    setAttendance(28);
+    if (!courseCode) setCourseCode('CS8611');
+    if (!courseTitle) setCourseTitle('AI & Deep Learning Practicum');
 
     setIsBookingModalOpen(true);
   };
@@ -447,6 +446,11 @@ export default function LabCalendarBooking({
   // Initiate Create Booking Form submission
   const handleInitiateCreateBooking = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (currentUserRole === 'student') {
+      showToast('error', 'Access Denied: Students are not permitted to reserve laboratory slots.');
+      return;
+    }
 
     if (!courseCode.trim() || !courseTitle.trim()) {
       showToast('error', 'Please enter course code and subject title.');
@@ -488,7 +492,7 @@ export default function LabCalendarBooking({
       courseTitle: courseTitle.trim(),
       organizer: currentUsername,
       organizerEmail: googleUser?.email || `${currentUsername.toLowerCase().replace(/[^a-z]/g, '')}@cit.edu.in`,
-      role: currentUserRole === 'admin' ? 'Faculty' : 'Student',
+      role: 'Faculty',
       batch: batch,
       attendance: attendance,
       equipmentRequirements: equipmentReq,
@@ -509,10 +513,9 @@ export default function LabCalendarBooking({
 
   // Initiate Delete/Cancel
   const handleInitiateCancel = (booking: LabBookingSlot) => {
-    // Admin can cancel any booking; student can cancel their own bookings
-    const isOwner = booking.organizer.toLowerCase() === currentUsername.toLowerCase() || booking.role === 'Student';
-    if (currentUserRole !== 'admin' && !isOwner) {
-      showToast('error', 'Students can only cancel their own reservations.');
+    // Only Faculty Administrators can cancel or delete bookings
+    if (currentUserRole === 'student') {
+      showToast('error', 'Students have view-only access and cannot cancel laboratory reservations.');
       return;
     }
 
@@ -650,6 +653,31 @@ export default function LabCalendarBooking({
         </div>
       )}
 
+      {/* Student View-Only Policy Notice */}
+      {currentUserRole === 'student' && (
+        <div 
+          id="student-readonly-notice-banner"
+          className={`p-4 rounded-xl border flex items-start sm:items-center gap-3.5 transition-colors ${
+            isDark ? 'bg-amber-950/20 border-amber-800/50 text-amber-200' : 'bg-amber-50 border-amber-200 text-amber-900'
+          }`}
+        >
+          <div className="p-2 rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-400 flex-shrink-0">
+            <Lock className="h-5 w-5" />
+          </div>
+          <div className="text-xs space-y-0.5">
+            <div className="font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+              <span>Student View-Only Mode Active</span>
+              <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-amber-500/20 text-amber-700 dark:text-amber-300">
+                NO BOOKING PERMISSION
+              </span>
+            </div>
+            <p className="text-amber-800/90 dark:text-amber-300/90 leading-relaxed">
+              You are viewing real-time laboratory schedules and period availability. Under college regulations, <strong>students cannot book or reserve slots</strong>. Lab reservations and hardware controls are exclusively managed by Faculty Administrators.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* 1. GOOGLE CALENDAR SYNC & ACTION BANNER */}
       <section 
         id="google-calendar-auth-card"
@@ -762,16 +790,29 @@ export default function LabCalendarBooking({
               </button>
             )}
 
-            {/* Book Slot Button (Available to both Faculty and Students) */}
-            <button
-              type="button"
-              id="btn-open-book-slot-modal"
-              onClick={() => openBookingModalForLab(selectedFloorNumber, selectedDate)}
-              className="py-2 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold uppercase tracking-wider shadow-xs transition-all flex items-center gap-2 cursor-pointer flex-shrink-0"
-            >
-              <Plus className="h-4 w-4" />
-              <span>{currentUserRole === 'admin' ? 'Book Slot (Faculty)' : 'Reserve Slot (Student)'}</span>
-            </button>
+            {/* Book Slot Button (Faculty Only) or Student Read-Only Badge */}
+            {currentUserRole === 'admin' ? (
+              <button
+                type="button"
+                id="btn-open-book-slot-modal"
+                onClick={() => openBookingModalForLab(selectedFloorNumber, selectedDate)}
+                className="py-2 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold uppercase tracking-wider shadow-xs transition-all flex items-center gap-2 cursor-pointer flex-shrink-0"
+              >
+                <Plus className="h-4 w-4" />
+                <span>Book Slot (Faculty)</span>
+              </button>
+            ) : (
+              <div 
+                id="student-view-only-badge"
+                className={`py-2 px-3.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 flex-shrink-0 ${
+                  isDark ? 'bg-slate-800 border-slate-700 text-slate-300' : 'bg-slate-100 border-slate-200 text-slate-700'
+                }`}
+                title="Students have view-only access to lab schedules and cannot book slots"
+              >
+                <Lock className="h-3.5 w-3.5 text-amber-500 flex-shrink-0" />
+                <span>Student View (Cannot Book Slots)</span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -979,7 +1020,7 @@ export default function LabCalendarBooking({
                           <AlertCircle className="h-3.5 w-3.5" />
                           <span>Reserved</span>
                         </div>
-                      ) : (
+                      ) : currentUserRole === 'admin' ? (
                         <button
                           type="button"
                           onClick={() => openBookingModalForLab(activeFocusFloor.floorNumber, selectedDate, slot.id)}
@@ -988,6 +1029,11 @@ export default function LabCalendarBooking({
                           <Plus className="h-3.5 w-3.5" />
                           <span>Book {slot.id}</span>
                         </button>
+                      ) : (
+                        <div className="w-full py-1.5 px-2 rounded-lg bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 text-[11px] font-medium text-center border border-emerald-500/20 flex items-center justify-center gap-1">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                          <span>Slot Open</span>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -1066,14 +1112,16 @@ export default function LabCalendarBooking({
                         Inspect Floor Plan
                       </button>
 
-                      <button
-                        type="button"
-                        onClick={() => openBookingModalForLab(floor.floorNumber, selectedDate)}
-                        className="py-1 px-2.5 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center gap-1 shadow-xs cursor-pointer"
-                      >
-                        <Plus className="h-3.5 w-3.5" />
-                        <span>Reserve Slot</span>
-                      </button>
+                      {currentUserRole === 'admin' && (
+                        <button
+                          type="button"
+                          onClick={() => openBookingModalForLab(floor.floorNumber, selectedDate)}
+                          className="py-1 px-2.5 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center gap-1 shadow-xs cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" />
+                          <span>Reserve Slot</span>
+                        </button>
+                      )}
                     </div>
                   </div>
 
@@ -1083,20 +1131,24 @@ export default function LabCalendarBooking({
                       isDark ? 'border-slate-700 text-slate-400 bg-slate-900/30' : 'border-slate-300 text-slate-500 bg-slate-50'
                     }`}>
                       <span>All period slots available on this date. Laboratory ready for reservation.</span>
-                      <button
-                        type="button"
-                        onClick={() => openBookingModalForLab(floor.floorNumber, selectedDate)}
-                        className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
-                      >
-                        + Quick Book First Slot
-                      </button>
+                      {currentUserRole === 'admin' ? (
+                        <button
+                          type="button"
+                          onClick={() => openBookingModalForLab(floor.floorNumber, selectedDate)}
+                          className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+                        >
+                          + Quick Book First Slot
+                        </button>
+                      ) : (
+                        <span className="text-xs font-mono text-slate-400">
+                          (Faculty reservation only)
+                        </span>
+                      )}
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                       {floorBookings.map((booking) => {
-                        const canCancel = currentUserRole === 'admin' || 
-                          booking.organizer.toLowerCase() === currentUsername.toLowerCase() || 
-                          booking.role === 'Student';
+                        const canCancel = currentUserRole === 'admin';
 
                         return (
                           <div
